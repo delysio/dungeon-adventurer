@@ -1,0 +1,45 @@
+LEVEL_01                    rcdata  'levels/001.pak'
+LEVEL_02                    rcdata  'levels/002.pak'
+LEVEL_03                    rcdata  'levels/003.pak'
+LEVEL_04                    rcdata  'levels/004.pak'
+LEVEL_05                    rcdata  'levels/005.pak'
+LEVEL_06                    rcdata  'levels/006.pak'
+LEVEL_07                    rcdata  'levels/007.pak'
+LEVEL_08                    rcdata  'levels/008.pak'
+LEVEL_09                    rcdata  'levels/009.pak'
+LEVEL_10                    rcdata  'levels/010.pak'
+LEVEL_11                    rcdata  'levels/011.pak'
+LEVEL_12                    rcdata  'levels/012.pak'
+LEVEL_13                    rcdata  'levels/013.pak'
+LEVEL_14                    rcdata  'levels/014.pak'
+LEVEL_15                    rcdata  'levels/015.pak'
+LEVEL_16                    rcdata  'levels/016.pak'
+LEVEL_17                    rcdata  'levels/017.pak'
+LEVEL_18                    rcdata  'levels/018.pak'
+LEVEL_19                    rcdata  'levels/019.pak'
+LEVEL_20                    rcdata  'levels/020.pak'
+
+PAK_TITLE_FONT              rcdata  'graphics/title_font.pak';
+PAK_TITLE_DATA              rcdata  'graphics/title_data.pak';
+
+PAK_INSTRUCTION_TEXT_PAGE_1 rcdata  'graphics/instruction_text_page_1.pak'
+PAK_INSTRUCTION_TEXT_PAGE_2 rcdata  'graphics/instruction_text_page_2.pak'
+
+PAK_LEVEL_FONT              rcdata  'graphics/maze_font.pak';
+
+PAK_DEATH_FONT              rcdata  'graphics/death_font.pak'
+PAK_DEATH_DATA              rcdata  'graphics/death_data.pak'
+PAK_GAME_OVER_TEXT          rcdata  'graphics/game_over_text.pak'
+
+PAK_TEXT_FONT               rcdata  'graphics/text_font.pak';
+
+PAK_PANEL                   rcdata  'graphics/panel.pak';
+
+PAK_END_DATA                rcdata  'graphics/end_data.pak';
+PAK_END_FONT                rcdata  'graphics/end_font.pak';
+PAK_END_STORY               rcdata  'graphics/end_story.pak';
+
+RMT_PLAYER_ADR              RMTPLAY 'music/music.feat' 0
+RMT_MODUL_ADR               RMT     'music/music.rmt'
+
+
