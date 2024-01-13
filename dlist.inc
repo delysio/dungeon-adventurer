@@ -19,6 +19,15 @@ display_list_title: array[0..30] of byte = (
     $41, lo($0600), hi($0600)
 );
 
+display_list_code: array[0..10] of byte = (
+
+    $70, $70, $70,
+    $42, lo(CODE_DATA), hi(CODE_DATA),
+    $70, $2,
+
+    $41, lo($0600), hi($0600)
+);
+
 display_list_game_over: array[0..31] of byte = (
 
     $70, $70, $70 + $80,

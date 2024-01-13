@@ -63,11 +63,9 @@ var
     msx:                TRMT;               // Sound object
     msx_volume:         byte = 255;         // Sound volume
     music_is_playing:   boolean = false;    // If music has to be played
-    restart_music:      boolean = true;     // Informs the title screen procedure that there has been a return from the instruction 
-                                            // screen and that it should not restart the music.
+    restart_music:      boolean = true;     // Informs the title screen procedure that there has been a return from the instruction   
 
-    tmpNote:            byte = 0;       
-    tmpInstr:            byte = 0;       
+    code_match:         boolean;            // matching enterd code
 
     ink_color:          byte;               // Bright color, used for fade in/out
 
@@ -1062,6 +1060,19 @@ begin
     unapl(pointer(PAK_TEXT_FONT), pointer(GAME_OVER_TEXT_FONT));
     unapl(pointer(PAK_GAME_OVER_TEXT), pointer(GAME_OVER_PIC_DATA + 13 * 40));
 
+    // if level > 1 then display skip code
+
+    if level > 0 then begin
+
+        move(@CODE_DISPLAY[1], pointer(GAME_OVER_PIC_DATA + 13 * 40 + 7 * 40), 40);
+        move(@LEVEL_CODES[level], pointer(GAME_OVER_PIC_DATA + 13 * 40 + 7 * 40 + 29), 5);
+
+        // hide size char
+
+        Poke(GAME_OVER_PIC_DATA + 13 * 40 + 7 * 40 + 29, 0);
+
+    end;
+
     // turn on screen and wait for key
 
     // set display list interrupts
@@ -1105,6 +1116,8 @@ begin
 
     restart_music := true;
 
+    level := 0;
+
 end;
 
 
@@ -1126,8 +1139,6 @@ begin
 
             time := 35;
             FillByte(pointer(PANEL + 40 + 5), 29, TIME_SYMBOL);
-            // msx.Sfx(SFX_INSTRUMENT, SFX_CHANNEL, tmpNote);
-            // Inc(tmpNote);
 
         end;
 
@@ -1207,7 +1218,6 @@ begin
         end else begin
 
             game_over := true;
-            level := 0;
 
         end;
 
@@ -1406,6 +1416,131 @@ begin
 
 end;
 
+
+{ Handles the entry of a code that allows the game to start from a specific level}
+
+procedure enter_code;
+var
+    i: byte;
+    j: byte;
+    k: byte;
+    code_compare: string[5];
+    skip_code_screen_memory: word = CODE_DATA + 40 + 17; // Screen memory location from which to display the code to be entered
+begin
+
+    fade_out_screen;
+
+    // turn off screen
+
+    SDMCTL := 0;
+    Pause;
+
+    // set display list
+
+    move(@display_list_code, pointer(DISPLAY_LIST_SAFE), sizeOf(display_list_help));
+    Pause;
+
+    SDLSTL := DISPLAY_LIST_SAFE;
+
+    // unpack font
+
+    unapl(pointer(PAK_TEXT_FONT), pointer(CODE_FONT));
+
+    // clear RAM
+
+    FillByte(pointer(CODE_DATA), 2*40, 0);
+
+    // print text
+
+    move(@CODE_STRING[1], pointer(CODE_DATA), 40);
+
+    // set font
+
+    CHBAS := hi(HELP_TEXT_FONT);
+
+    // turn on screen and wait for code
+
+    Pause;
+
+    NMIEN := $40;
+    Pause;
+
+    SDMCTL := 62;
+
+    fade_in_screen;
+
+    // reset character register
+
+    CH := $ff;
+
+    // start counting from 1, 0 - length of string
+
+    i := 1;
+
+    // screen counter
+
+    k := 0;
+
+    code_match := false;
+
+    repeat
+
+        // wait for key
+
+        repeat until keypressed;
+
+        // read key
+
+        key := ReadKey();
+
+        // Only lower case letters are allowed (a..z)
+
+        case key of
+
+            #97..#122: begin
+
+                // save to comparison array
+
+                code_compare[i] := key;
+
+                // print to screen
+
+                Poke(skip_code_screen_memory + k, Ord(key));
+
+                // increase index
+
+                Inc(i);
+
+                // print every second column
+
+                Inc(k, 2);
+
+            end;
+
+        end;
+
+    until i = 5;
+
+    SetLength(code_compare,4);
+
+    // Compare the entered codes with the code patterns
+
+    for j := 1 to 19 do begin
+
+        if code_compare = LEVEL_CODES[j] then begin
+
+            code_match := true;
+            level := j;
+            break;
+
+        end;
+
+    end;
+
+    restart_music := false;
+
+end;
+
 { Main program loop }
 begin
 
@@ -1476,6 +1611,11 @@ begin
 
                     'h', 'H': begin display_help; user_action := true; end;
                     'd', 'D': begin dos_exit; user_action := true; end;
+                    'e', 'E': begin 
+                        enter_code; 
+                        user_action := true; 
+                        if code_match then game;
+                    end;
 
                 end;
 

@@ -8,6 +8,13 @@ TITLE_PIC           = $A400;    // Title picture screen data
 
 LEVEL_FONT          = $9000;    // Rocks, items font data
 
+LEVEL_CODES         : array[0..19] of string[5] = ('0000', 'ciye', 'hcvw', 'jqcv', 'ests', 'uwzu', 'cdoe', 'tcri', 'bimy', 'gaza', 'zhiu', 'tsir', 'nyjc', 'went', 'izyq', 'jmoh', 'qtun', 'athp', 'gtir', 'fsif');
+
+CODE_FONT           = $9000;
+CODE_DATA           = $9400;
+CODE_STRING         = '            ENTER LEVEL CODE            '~;
+CODE_DISPLAY        = '     SKIP CODE TO THIS LEVEL:           '~;
+
 GAME_OVER_PIC_FONT  = $9000;    // Game over picture font data
 GAME_OVER_PIC_DATA  = $9800;    // Game over picture screen data
 GAME_OVER_TEXT_FONT = $9C00;
