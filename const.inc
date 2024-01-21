@@ -8,7 +8,9 @@ TITLE_PIC           = $A400;    // Title picture screen data
 
 LEVEL_FONT          = $9000;    // Rocks, items font data
 
-LEVEL_CODES         : array[0..19] of string[5] = ('0000', 'ciye', 'hcvw', 'jqcv', 'ests', 'uwzu', 'cdoe', 'tcri', 'bimy', 'gaza', 'zhiu', 'tsir', 'nyjc', 'went', 'izyq', 'jmoh', 'qtun', 'athp', 'gtir', 'fsif');
+// Generate four-letter (a-z) codes before compilation. In the distributed source they have been removed so that viewers do not go straight to the end of the game
+
+LEVEL_CODES         : array[0..19] of string[5] = ('0000', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
 CODE_FONT           = $9000;
 CODE_DATA           = $9400;
