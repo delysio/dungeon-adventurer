@@ -48,13 +48,16 @@ PANEL_SRC_SWORD     = PANEL_SRC + 40 + 37;  // Location of sword symbol on the c
 
 RMT_PLAYER_ADR      = $AC00;                    // Address of RMT player - WARNING: player occupies ADR-$3c0 to ADR+$734
 RMT_MODUL_ADR       = $B000;                    // Address of music data
-RMT_VOLUME          = RMT_PLAYER_ADR + $103;     // Address of volume value;
+
+RMT_VOLUME          = $AD03;
 
 MUSIC_TITLE         = $00;      // Number of pattern with title music;
-MUSIC_INGAME        = $0E;      //                        ingame music;
-MUSIC_DIE           = $13;      //                        ingame music;
-MUSIC_GAMEOVER      = $16;      //                        ingame music;
-MUSIC_ENDPART       = $16;      //                        ingame music;
+MUSIC_INGAME        = $0E;      // ingame music;
+MUSIC_DIE           = $13;      // death sfx;
+MUSIC_GAMEOVER      = $16;      // game over music;
+MUSIC_WIN           = $23;      // win sfx;
+MUSIC_ENDPART       = $26;      // outro music;
+MUSIC_EMPTY         = $2e;      // silence
 
 SFX_INSTRUMENT      = $6;
 SFX_CHANNEL         = $3;
@@ -93,6 +96,9 @@ PLAYER_FRAMES_Y: array [0..1] of byte = (PLAYER_UP_SYMBOL, PLAYER_DN_SYMBOL);
 
 // How long the map is to be displayed
 MAP_SHOW_DURATION = 120;
+
+// Time between color changes (in frames);
+FADE_DURATION = 3;
 
 // Joystick directions
 JOY_UP = 14;

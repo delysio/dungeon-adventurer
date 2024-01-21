@@ -63,6 +63,7 @@ var
     msx:                TRMT;               // Sound object
     msx_volume:         byte = 255;         // Sound volume
     music_is_playing:   boolean = false;    // If music has to be played
+    silent_play:   boolean = false;
     restart_music:      boolean = true;     // Informs the title screen procedure that there has been a return from the instruction   
 
     code_match:         boolean;            // matching enterd code
@@ -179,7 +180,7 @@ begin
     
         Inc(msx_volume, 15);
         Poke(RMT_VOLUME, msx_volume);
-        Pause(5);
+        Pause(FADE_DURATION);
     
     until msx_volume = 255;
 
@@ -196,7 +197,7 @@ begin
     
         Dec(msx_volume, 15);
         Poke(RMT_VOLUME, msx_volume);
-        Pause(5);
+        Pause(FADE_DURATION);
     
     until msx_volume = 0;
 
@@ -213,7 +214,7 @@ begin
         PCOLR1 := ink_color;
         PCOLR2 := ink_color;      
 
-        Pause(5);
+        Pause(FADE_DURATION);
 
     end;
 
@@ -231,7 +232,7 @@ begin
         PCOLR1 := ink_color;
         PCOLR2 := ink_color;
 
-        Pause(5);
+        Pause(FADE_DURATION);
 
     end;
 
@@ -625,6 +626,7 @@ begin
 
 end;
 
+
 { Animates selected enemy }
 procedure process_animation;
 begin
@@ -661,6 +663,7 @@ begin
     Poke(HPOS[enemy.id], enemy.x);
 
 end;
+
 
 { Werifies whether the enemy is on the board and, if so, triggers the animation procedure. }
 procedure animate_enemies;
@@ -773,6 +776,13 @@ begin
         if calc_y = enemy_2.y then begin
 
             enemy := @enemy_2;
+            process_collision(calc_x, calc_y);
+
+        end;
+
+        if calc_y = enemy_3.y then begin
+
+            enemy := @enemy_3;
             process_collision(calc_x, calc_y);
 
         end;
@@ -918,15 +928,13 @@ end;
 procedure congratulations;
 var
     vsc_counter: byte;
-    line_counter: byte = 0;
+    line_counter: byte;
     scroll_address: word;
 const
     display_list_lms_end: word = $0600 + 18;
 begin
 
-    // mute ingame music
-
-    fade_out_music;
+    Pause(5*60);
 
     // turn off screen
 
@@ -971,15 +979,17 @@ begin
     Pause;
     music_is_playing := true;
 
+    // Init scroll 
+
+    scroll_address := END_TEXT_DATA;
+    VSCROL := 0;
+    line_counter := 0;
+
     // turn on screen
 
     SDMCTL := 62;
 
     fade_in_screen;
-
-    // Init scroll 
-
-    scroll_address := END_TEXT_DATA;
 
     // wait 5 seconds until scroll 
 
@@ -1142,6 +1152,26 @@ begin
 
         end;
 
+        // check if player want to mute music
+
+        if key = 'm' then begin
+
+            if silent_play then begin 
+
+                msx.Init(MUSIC_INGAME); 
+                silent_play := false;
+                msx.Play();
+                
+            end else begin
+
+                msx.Init(MUSIC_EMPTY); 
+                silent_play := true;
+                msx.Play();
+
+            end; 
+
+        end;
+
     end;
 
 end;
@@ -1150,9 +1180,13 @@ end;
 { Main game loop }
 procedure game;
 var 
-    game_completed: boolean = false;
+    game_completed: boolean;
 
 begin
+
+    // set game state to not completed
+
+    game_completed := false;
 
     // fade out title screen
 
@@ -1163,6 +1197,10 @@ begin
     fade_out_music;
     music_is_playing := false;
     Pause;
+
+    // silent game is off by default
+
+    silent_play := false;
 
     // set volume to max
 
@@ -1224,6 +1262,14 @@ begin
     until game_over or game_completed;
 
     if game_completed then begin
+
+        // set win sfx effect
+
+        msx.Init(MUSIC_WIN);
+
+        // enable ingame music
+
+        music_is_playing := true;
 
         // stop counting time
 
@@ -1361,6 +1407,7 @@ begin
 
 end;
 
+
 procedure vbl; interrupt;
 begin
     if music_is_playing then msx.Play;
@@ -1369,6 +1416,7 @@ begin
         jmp $E462
         };
 end;
+
 
 { Displays the title screen }
 procedure title_screen;   
@@ -1418,7 +1466,6 @@ end;
 
 
 { Handles the entry of a code that allows the game to start from a specific level}
-
 procedure enter_code;
 var
     i: byte;
@@ -1540,6 +1587,7 @@ begin
     restart_music := false;
 
 end;
+
 
 { Main program loop }
 begin
