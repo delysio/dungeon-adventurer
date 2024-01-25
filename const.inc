@@ -16,6 +16,8 @@ CODE_FONT           = $9000;
 CODE_DATA           = $9400;
 CODE_STRING         = '            ENTER LEVEL CODE            '~;
 CODE_DISPLAY        = '     SKIP CODE TO THIS LEVEL:           '~;
+CODE_VALID          = '              CODE IS VALID             '~;
+CODE_MISMATCH       = '              INVALID CODE              '~;
 
 GAME_OVER_PIC_FONT  = $9000;    // Game over picture font data
 GAME_OVER_PIC_DATA  = $9800;    // Game over picture screen data

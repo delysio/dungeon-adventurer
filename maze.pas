@@ -136,6 +136,7 @@ begin
 
 end;
 
+
 { Randomises the next Y position of the enemy in the range from 2 to 19 making sure that the value 
   is different from the one given
   @returns y position }
@@ -202,6 +203,7 @@ begin
     until msx_volume = 0;
 
 end;
+
 
 { Fades out screen }
 procedure fade_out_screen;
@@ -1132,7 +1134,7 @@ end;
 
 
 { Allows game levels to be skipped and time to be reset }
-procedure cheat;
+procedure check_keyboard;
 begin
 
     if keypressed then begin
@@ -1141,16 +1143,16 @@ begin
 
         // cheat: level skipping
 
-        if (key = 'q') or (key = 'Q') then exit_found := true;
+        // if (key = 'q') or (key = 'Q') then exit_found := true;
 
         // cheat: reset time
 
-        if (key = 'w') or (key = 'W') then begin
+        // if (key = 'w') or (key = 'W') then begin
 
-            time := 35;
-            FillByte(pointer(PANEL + 40 + 5), 29, TIME_SYMBOL);
+            // time := 35;
+            // FillByte(pointer(PANEL + 40 + 5), 29, TIME_SYMBOL);
 
-        end;
+        // end;
 
         // check if player want to mute music
 
@@ -1171,6 +1173,10 @@ begin
             end; 
 
         end;
+
+        // check if player want to end game
+
+        if key = CH_ESC then game_over := true; 
 
     end;
 
@@ -1230,7 +1236,7 @@ begin
 
             check_joy;
 
-            // cheat;
+            check_keyboard;
 
             reveal_walls;
 
@@ -1583,6 +1589,28 @@ begin
         end;
 
     end;
+
+    fade_out_screen;
+
+    // clear RAM
+
+    FillByte(pointer(CODE_DATA), 2*40, 0);
+
+    // display confirmation
+
+    if code_match then begin
+        move(@CODE_VALID[1], pointer(CODE_DATA), 40);
+    end else begin
+        move(@CODE_MISMATCH[1], pointer(CODE_DATA), 40);
+    end;
+
+    fade_in_screen;
+    Pause(3*60);
+    fade_out_screen;
+
+    // clear RAM
+
+    FillByte(pointer(CODE_DATA), 2*40, 0);
 
     restart_music := false;
 
